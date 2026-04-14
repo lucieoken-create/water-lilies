@@ -1,11 +1,7 @@
 import { useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import FloatingCard from './components/FloatingCard'
-
-// To use the real background image once uploaded:
-// 1. Add your image to src/assets/background.jpg
-// 2. Import it: import bgImage from './assets/background.jpg'
-// 3. Add to the container style: backgroundImage: `url(${bgImage})`
+import bgImage from './assets/background.jpg'
 
 const VIDEOS = [
   { id: 'vGh-EvmZVCQ', x: '4%',  y: '8%'  },
@@ -27,8 +23,7 @@ export default function App() {
         position: 'fixed',
         inset: 0,
         overflow: 'hidden',
-        // Placeholder gradient — swap for background image once uploaded
-        background: 'linear-gradient(160deg, #4ea87a 0%, #3b8fc4 35%, #6cbfa2 65%, #4a7db8 100%)',
+        backgroundImage: `url(${bgImage})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}
