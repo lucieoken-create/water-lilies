@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 
-const CARD_WIDTH = 210
+const CARD_WIDTH = 200
 
-export default function FloatingCard({
-  video,
+export default function PhotoCard({
+  photo,
   loadIndex,
   isSelected,
   isAnySelected,
@@ -12,20 +12,9 @@ export default function FloatingCard({
   onSelect,
   onClose,
 }) {
-  const [title, setTitle] = useState(`Video ${loadIndex + 1}`)
   const [isDragging, setIsDragging] = useState(false)
   const [hasLoaded, setHasLoaded] = useState(false)
   const didDragRef = useRef(false)
-
-  useEffect(() => {
-    const url =
-      `https://www.youtube.com/oembed` +
-      `?url=https://www.youtube.com/watch?v=${video.id}&format=json`
-    fetch(url)
-      .then(r => r.json())
-      .then(data => { if (data.title) setTitle(data.title) })
-      .catch(() => {})
-  }, [video.id])
 
   return (
     <>
@@ -52,8 +41,8 @@ export default function FloatingCard({
         onAnimationComplete={() => setHasLoaded(true)}
         style={{
           position: 'absolute',
-          left:     video.x,
-          top:      video.y,
+          left:     photo.x,
+          top:      photo.y,
           width:    CARD_WIDTH,
           zIndex:   isDragging ? 8 : 2,
           cursor:   isAnySelected ? 'default' : isDragging ? 'grabbing' : 'grab',
@@ -80,7 +69,6 @@ export default function FloatingCard({
           if (!didDragRef.current && !isAnySelected) onSelect()
         }}
       >
-        {/* Card face — scale + shadow lift while dragging */}
         <motion.div
           animate={{
             scale:     isDragging ? 1.07 : 1,
@@ -92,7 +80,7 @@ export default function FloatingCard({
           style={{
             borderRadius:         14,
             overflow:             'hidden',
-            background:           'rgba(255, 255, 255, 0.94)',
+            background:           'rgba(255,255,255,0.94)',
             backdropFilter:       'blur(12px)',
             WebkitBackdropFilter: 'blur(12px)',
             cursor:               'inherit',
@@ -100,33 +88,19 @@ export default function FloatingCard({
           }}
         >
           <img
-            src={`https://img.youtube.com/vi/${video.id}/mqdefault.jpg`}
-            alt={title}
+            src={photo.src}
+            alt={photo.alt}
             draggable={false}
-            style={{ width: '100%', display: 'block', borderRadius: '14px 14px 0 0' }}
+            style={{ width: '100%', display: 'block', borderRadius: 14 }}
           />
-          <div
-            style={{
-              padding:      '8px 12px 10px',
-              fontSize:     12.5,
-              fontWeight:   600,
-              color:        '#1a1a2e',
-              lineHeight:   1.35,
-              whiteSpace:   'nowrap',
-              overflow:     'hidden',
-              textOverflow: 'ellipsis',
-            }}
-          >
-            {title}
-          </div>
         </motion.div>
       </motion.div>
 
-      {/* Expanded card — fixed, centered, above overlay */}
+      {/* Expanded lightbox */}
       <AnimatePresence>
         {isSelected && (
           <motion.div
-            key={`expanded-outer-${video.id}`}
+            key={`photo-expanded-outer-${photo.id}`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -148,17 +122,17 @@ export default function FloatingCard({
               transition={{ type: 'spring', stiffness: 380, damping: 30 }}
               style={{
                 pointerEvents: 'all',
-                width:         'min(680px, 92vw)',
+                width:         'min(800px, 92vw)',
                 borderRadius:  18,
                 overflow:      'hidden',
-                background:    '#000',
+                background:    '#111',
                 boxShadow:     '0 40px 100px rgba(0,0,0,0.62), 0 10px 32px rgba(0,0,0,0.38)',
                 position:      'relative',
               }}
             >
               <button
                 onClick={onClose}
-                aria-label="Close video"
+                aria-label="Close photo"
                 style={{
                   position:       'absolute',
                   top:            10,
@@ -184,12 +158,15 @@ export default function FloatingCard({
               >
                 ×
               </button>
-              <iframe
-                src={`https://www.youtube.com/embed/${video.id}?autoplay=1&rel=0`}
-                title={title}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowFullScreen
-                style={{ width: '100%', aspectRatio: '16 / 9', border: 'none', display: 'block' }}
+              <img
+                src={photo.src}
+                alt={photo.alt}
+                style={{
+                  width:     '100%',
+                  display:   'block',
+                  maxHeight: '85vh',
+                  objectFit: 'contain',
+                }}
               />
             </motion.div>
           </motion.div>
