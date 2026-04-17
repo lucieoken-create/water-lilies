@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import FloatingCard  from './components/FloatingCard'
 import PhotoCard     from './components/PhotoCard'
 import LilyPad      from './components/LilyPad'
+import CurtainPad   from './components/CurtainPad'
 import Ripple        from './components/Ripple'
 import AddLinkInput  from './components/AddLinkInput'
 
@@ -36,32 +37,32 @@ const PHOTOS = [
   { id: 'monet',   src: monetImg,   alt: 'Monet',   x: '54%', y: '77%' },
 ]
 
-// Desktop: 15 pads, scale 2.5–4.0, rotation ±10°, directly overlapping cards
-const LILY_PADS = [
-  { id: 'lp0',  type: 'pink',  x: '1%',  y: '3%',  scale: 3.0,  rotation:  -7, size: 80  },
-  { id: 'lp1',  type: 'pink',  x: '65%', y: '2%',  scale: 3.4,  rotation:   8, size: 80  },
-  { id: 'lp2',  type: 'pink',  x: '14%', y: '42%', scale: 3.1,  rotation:  -5, size: 80  },
-  { id: 'lp3',  type: 'pink',  x: '59%', y: '45%', scale: 3.7,  rotation:   9, size: 80  },
-  { id: 'lp4',  type: 'pink',  x: '31%', y: '3%',  scale: 2.8,  rotation:  -8, size: 80  },
-  { id: 'lp5',  type: 'pink',  x: '51%', y: '73%', scale: 3.25, rotation:   6, size: 80  },
-  { id: 'lp6',  type: 'white', x: '35%', y: '30%', scale: 2.65, rotation:  -4, size: 80  },
-  { id: 'lp7',  type: 'white', x: '2%',  y: '68%', scale: 3.55, rotation:   7, size: 80  },
-  { id: 'lp8',  type: 'white', x: '64%', y: '69%', scale: 3.0,  rotation:  -9, size: 80  },
-  { id: 'lp9',  type: 'white', x: '23%', y: '60%', scale: 3.25, rotation:   5, size: 80  },
-  { id: 'lp10', type: 'white', x: '45%', y: '10%', scale: 2.5,  rotation:  -6, size: 80  },
-  { id: 'lp11', type: 'pad',   x: '77%', y: '34%', scale: 4.0,  rotation:   4, size: 100 },
-  { id: 'lp12', type: 'pad',   x: '42%', y: '50%', scale: 3.0,  rotation:  -8, size: 100 },
-  { id: 'lp13', type: 'pad',   x: '16%', y: '16%', scale: 3.55, rotation:   7, size: 100 },
-  { id: 'lp14', type: 'pad',   x: '69%', y: '80%', scale: 3.1,  rotation:  -3, size: 100 },
+// 9 pads forming an organic carpet on load — scatter outward after 1.5s
+const CURTAIN_PADS = [
+  // top row
+  { id: 'cp0', type: 'pink',  x: '2%',  y: '1%',  scale: 3.5, rotation: -15, size: 80,  scatterX: -700, scatterY: -400 },
+  { id: 'cp1', type: 'pad',   x: '30%', y: '-3%', scale: 4.0, rotation:   6, size: 100, scatterX:  -80, scatterY: -700 },
+  { id: 'cp2', type: 'white', x: '62%', y: '3%',  scale: 3.2, rotation:  18, size: 80,  scatterX:  650, scatterY: -350 },
+  // middle row
+  { id: 'cp3', type: 'pad',   x: '-5%', y: '33%', scale: 3.8, rotation:  -8, size: 100, scatterX: -750, scatterY:  100 },
+  { id: 'cp4', type: 'pink',  x: '26%', y: '26%', scale: 4.0, rotation:  12, size: 80,  scatterX: -300, scatterY:  600 },
+  { id: 'cp5', type: 'white', x: '60%', y: '28%', scale: 3.5, rotation: -10, size: 80,  scatterX:  700, scatterY:  -80 },
+  // bottom row
+  { id: 'cp6', type: 'white', x: '4%',  y: '60%', scale: 3.0, rotation:  14, size: 80,  scatterX: -550, scatterY:  500 },
+  { id: 'cp7', type: 'pink',  x: '38%', y: '58%', scale: 3.8, rotation:  -6, size: 80,  scatterX:  180, scatterY:  650 },
+  { id: 'cp8', type: 'pad',   x: '65%', y: '52%', scale: 3.2, rotation:   9, size: 100, scatterX:  700, scatterY:  400 },
 ]
 
-// Mobile: 5 pads, scale 1.0–1.5, fixed-position, scattered loosely
-const LILY_PADS_MOBILE = [
-  { id: 'mlp0', type: 'pink',  x: '5%',  y: '8%',  scale: 1.2, rotation:  -7, size: 80  },
-  { id: 'mlp1', type: 'white', x: '68%', y: '22%', scale: 1.0, rotation:   8, size: 80  },
-  { id: 'mlp2', type: 'pink',  x: '60%', y: '55%', scale: 1.3, rotation:  -5, size: 80  },
-  { id: 'mlp3', type: 'pad',   x: '8%',  y: '70%', scale: 1.5, rotation:   9, size: 100 },
-  { id: 'mlp4', type: 'white', x: '72%', y: '83%', scale: 1.1, rotation:  -3, size: 80  },
+// 6 ambient pads — always present, in open water away from cards
+// Card reference: V1(4,8) V2(68,6) V3(18,46) V4(62,50) V5(5,72) V6(67,74) V7(80,22)
+//                 georgia(34,7) jss(38,35) winslow(26,64) monet(54,77)
+const AMBIENT_PADS = [
+  { id: 'ap0', type: 'pad',   x: '86%', y: '3%',  scale: 1.4, rotation:  -8, size: 100 }, // top-right edge
+  { id: 'ap1', type: 'pink',  x: '88%', y: '40%', scale: 1.2, rotation:  13, size: 80  }, // right side
+  { id: 'ap2', type: 'white', x: '47%', y: '91%', scale: 1.5, rotation:  -5, size: 80  }, // bottom center
+  { id: 'ap3', type: 'pink',  x: '-1%', y: '52%', scale: 1.1, rotation:   7, size: 80  }, // left edge (partially off-screen)
+  { id: 'ap4', type: 'pad',   x: '81%', y: '84%', scale: 1.6, rotation: -14, size: 100 }, // bottom-right
+  { id: 'ap5', type: 'white', x: '2%',  y: '90%', scale: 1.3, rotation:  10, size: 80  }, // bottom-left edge
 ]
 
 function useIsMobile() {
@@ -88,10 +89,19 @@ export default function App() {
   const containerRef = useRef(null)
   const isMobile     = useIsMobile()
 
-  const [selectedId,  setSelectedId]  = useState(null)
-  const [ripples,     setRipples]     = useState([])
-  const [removedIds,  setRemovedIds]  = useState(loadRemovedIds)
-  const [userCards,   setUserCards]   = useState(loadUserCards)
+  const [selectedId,        setSelectedId]        = useState(null)
+  const [ripples,           setRipples]           = useState([])
+  const [removedIds,        setRemovedIds]        = useState(loadRemovedIds)
+  const [userCards,         setUserCards]         = useState(loadUserCards)
+  const [curtainScattering, setCurtainScattering] = useState(false)
+  const [showCurtain,       setShowCurtain]       = useState(true)
+
+  // Trigger curtain scatter at 1.5s, remove from DOM at 2.7s
+  useEffect(() => {
+    const t1 = setTimeout(() => setCurtainScattering(true),  1500)
+    const t2 = setTimeout(() => setShowCurtain(false),       2700)
+    return () => { clearTimeout(t1); clearTimeout(t2) }
+  }, [])
 
   const isAnySelected = selectedId !== null
 
@@ -128,7 +138,6 @@ export default function App() {
     })
   }, [])
 
-  // Desktop: ripple coords relative to fixed container
   const handleBackgroundClick = useCallback((e) => {
     if (isAnySelected) return
     const rect = containerRef.current.getBoundingClientRect()
@@ -137,7 +146,6 @@ export default function App() {
     setTimeout(() => setRipples(prev => prev.filter(r => r.id !== id)), 1900)
   }, [isAnySelected])
 
-  // Mobile: ripple coords are viewport-relative (position: fixed ripples)
   const handleMobileClick = useCallback((e) => {
     if (isAnySelected) return
     const id = `${Date.now()}-${Math.random()}`
@@ -148,6 +156,28 @@ export default function App() {
   const visibleVideos = VIDEOS.filter(v => !removedIds.has(v.id))
   const visiblePhotos = PHOTOS.filter(p => !removedIds.has(p.id))
   const allCardsCount = visibleVideos.length + visiblePhotos.length
+
+  // Curtain and ambient pads are the same element set for both layouts
+  const curtainEl = showCurtain && CURTAIN_PADS.map(pad => (
+    <CurtainPad
+      key={pad.id}
+      pad={pad}
+      SvgComponent={SVG_MAP[pad.type]}
+      scattering={curtainScattering}
+    />
+  ))
+
+  const ambientEl = AMBIENT_PADS.map((lily, i) => (
+    <LilyPad
+      key={lily.id}
+      lily={lily}
+      lilyIndex={i}
+      SvgComponent={SVG_MAP[lily.type]}
+      containerRef={containerRef}
+      isMobile={isMobile}
+      ambient
+    />
+  ))
 
   const overlay = (
     <AnimatePresence>
@@ -240,41 +270,20 @@ export default function App() {
         style={{ position: 'relative', minHeight: '100dvh', overflowY: 'auto', overflowX: 'hidden' }}
         onClick={handleMobileClick}
       >
-        {/* Fixed background */}
         <div style={{
-          position:           'fixed',
-          inset:              0,
-          backgroundImage:    `url(${bgImage})`,
-          backgroundSize:     'cover',
-          backgroundPosition: 'center',
-          backgroundColor:    '#4a8a6a',
-          zIndex:             0,
+          position: 'fixed', inset: 0,
+          backgroundImage: `url(${bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center',
+          backgroundColor: '#4a8a6a', zIndex: 0,
         }} />
 
-        {/* Fixed-position ripples */}
         {ripples.map(r => <Ripple key={r.id} x={r.x} y={r.y} fixed />)}
+        {curtainEl}
+        {ambientEl}
 
-        {/* Fixed lily pads scattered around viewport */}
-        {LILY_PADS_MOBILE.map((lily, i) => (
-          <LilyPad
-            key={lily.id}
-            lily={lily}
-            lilyIndex={i}
-            SvgComponent={SVG_MAP[lily.type]}
-            containerRef={containerRef}
-            isMobile
-          />
-        ))}
-
-        {/* Scrollable card column */}
         <div style={{
-          position:       'relative',
-          zIndex:         2,
-          display:        'flex',
-          flexDirection:  'column',
-          alignItems:     'center',
-          gap:            28,
-          padding:        '60px 20px 140px',
+          position: 'relative', zIndex: 2,
+          display: 'flex', flexDirection: 'column', alignItems: 'center',
+          gap: 28, padding: '60px 20px 140px',
         }}>
           {renderCards(true)}
         </div>
@@ -285,35 +294,20 @@ export default function App() {
     )
   }
 
-  // Desktop layout
   return (
     <div
       ref={containerRef}
       onClick={handleBackgroundClick}
       style={{
-        position:           'fixed',
-        inset:              0,
-        overflow:           'hidden',
-        backgroundImage:    `url(${bgImage})`,
-        backgroundSize:     'cover',
-        backgroundPosition: 'center',
-        backgroundColor:    '#4a8a6a',
+        position: 'fixed', inset: 0, overflow: 'hidden',
+        backgroundImage: `url(${bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center',
+        backgroundColor: '#4a8a6a',
       }}
     >
       {ripples.map(r => <Ripple key={r.id} x={r.x} y={r.y} />)}
-
+      {curtainEl}
+      {ambientEl}
       {renderCards(false)}
-
-      {LILY_PADS.map((lily, i) => (
-        <LilyPad
-          key={lily.id}
-          lily={lily}
-          lilyIndex={i}
-          SvgComponent={SVG_MAP[lily.type]}
-          containerRef={containerRef}
-        />
-      ))}
-
       {overlay}
       <AddLinkInput onAdd={handleAddLink} />
     </div>

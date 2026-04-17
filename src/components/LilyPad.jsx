@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 const BOB_AMOUNTS   = [3.5, 4.2, 3.0, 4.8, 3.8, 4.0, 3.2, 4.5, 3.6, 4.1, 3.3, 4.7, 3.9, 4.3, 3.1]
 const BOB_DURATIONS = [5.2, 5.8, 4.9, 6.1, 5.5, 4.7, 6.0, 5.3, 4.8, 5.9, 5.1, 6.3, 4.6, 5.7, 5.4]
 
-export default function LilyPad({ lily, lilyIndex, SvgComponent, containerRef, isMobile }) {
+export default function LilyPad({ lily, lilyIndex, SvgComponent, containerRef, isMobile, ambient }) {
   const [isDragging, setIsDragging] = useState(false)
 
   const bobAmount   = BOB_AMOUNTS[lilyIndex % BOB_AMOUNTS.length]
@@ -12,9 +12,10 @@ export default function LilyPad({ lily, lilyIndex, SvgComponent, containerRef, i
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
+      // ambient pads are already visible — skip the fade-in entirely
+      initial={ambient ? false : { opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ delay: lilyIndex * 0.05, duration: 0.7, ease: 'easeOut' }}
+      transition={ambient ? {} : { delay: lilyIndex * 0.05, duration: 0.7, ease: 'easeOut' }}
       style={{
         position:      isMobile ? 'fixed' : 'absolute',
         left:          lily.x,
