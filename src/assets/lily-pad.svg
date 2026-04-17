@@ -1,9 +1,15 @@
-<!-- lily-pad.svg -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="-80 -20 180 100" pointer-events="visibleFill">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-80 -20 180 100">
+  <defs>
+    <clipPath id="pad-clip">
+      <path d="M0,0 C-55,-8 -62,40 -30,55 C0,70 48,62 64,32 C80,0 55,-8 0,0 Z"/>
+    </clipPath>
+  </defs>
   <path d="M0,0 C-55,-8 -62,40 -30,55 C0,70 48,62 64,32 C80,0 55,-8 0,0 Z" fill="#3a6b32"/>
+  <g clip-path="url(#pad-clip)">
+    <path d="M0,0 C18,26 26,46 32,55" fill="none" stroke="#1a3a16" stroke-width="0.8" opacity="0.45"/>
+    <path d="M0,0 C-10,20 -16,40 -30,55" fill="none" stroke="#1a3a16" stroke-width="0.8" opacity="0.45"/>
+    <path d="M0,0 C24,10 44,18 64,32" fill="none" stroke="#1a3a16" stroke-width="0.8" opacity="0.45"/>
+    <path d="M0,0 C-28,6 -46,20 -55,30" fill="none" stroke="#1a3a16" stroke-width="0.8" opacity="0.45"/>
+  </g>
   <path d="M0,0 C-4,12 4,26 0,0 Z" fill="#1a3a16"/>
-  <path d="M0,0 C18,26 26,46 32,55" fill="none" stroke="#1a3a16" stroke-width="0.8"/>
-  <path d="M0,0 C-10,20 -16,40 -30,55" fill="none" stroke="#1a3a16" stroke-width="0.8"/>
-  <path d="M0,0 C24,10 44,18 64,32" fill="none" stroke="#1a3a16" stroke-width="0.8"/>
-  <path d="M0,0 C-28,6 -46,20 -55,30" fill="none" stroke="#1a3a16" stroke-width="0.8"/>
 </svg>
