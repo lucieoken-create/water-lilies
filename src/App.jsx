@@ -37,16 +37,20 @@ const PHOTOS = [
   { id: 'monet',   src: monetImg,   alt: 'Monet',   x: '54%', y: '77%' },
 ]
 
-// 6 ambient pads — always present, in open water away from cards
+// 10 ambient pads — always present, in open water away from cards
 // Card reference: V1(4,8) V2(68,6) V3(18,46) V4(62,50) V5(5,72) V6(67,74) V7(80,22)
 //                 georgia(34,7) jss(38,35) winslow(26,64) monet(54,77)
 const AMBIENT_PADS = [
   { id: 'ap0', type: 'pad',   x: '86%', y: '3%',  scale: 1.4, rotation:  -8, size: 100 }, // top-right edge
   { id: 'ap1', type: 'pink',  x: '88%', y: '40%', scale: 1.2, rotation:  13, size: 80  }, // right side
   { id: 'ap2', type: 'white', x: '47%', y: '91%', scale: 1.5, rotation:  -5, size: 80  }, // bottom center
-  { id: 'ap3', type: 'pink',  x: '-1%', y: '52%', scale: 1.1, rotation:   7, size: 80  }, // left edge (partially off-screen)
+  { id: 'ap3', type: 'pink',  x: '-1%', y: '52%', scale: 1.1, rotation:   7, size: 80  }, // left edge
   { id: 'ap4', type: 'pad',   x: '81%', y: '84%', scale: 1.6, rotation: -14, size: 100 }, // bottom-right
   { id: 'ap5', type: 'white', x: '2%',  y: '90%', scale: 1.3, rotation:  10, size: 80  }, // bottom-left edge
+  { id: 'ap6', type: 'pink',  x: '11%', y: '22%', scale: 1.2, rotation:  15, size: 80  }, // left-center, between V1 and V3
+  { id: 'ap7', type: 'pad',   x: '91%', y: '10%', scale: 1.3, rotation:  -6, size: 100 }, // far top-right
+  { id: 'ap8', type: 'white', x: '57%', y: '89%', scale: 1.4, rotation:   8, size: 80  }, // bottom right of monet
+  { id: 'ap9', type: 'pink',  x: '32%', y: '92%', scale: 1.1, rotation: -11, size: 80  }, // bottom-center left
 ]
 
 function useIsMobile() {
@@ -80,10 +84,10 @@ export default function App() {
   const [curtainScattering, setCurtainScattering] = useState(false)
   const [showCurtain,       setShowCurtain]       = useState(true)
 
-  // Trigger curtain scatter at 1.5s, remove from DOM at 2.7s
+  // Curtain stays for 2s, then scatters over 1.8s, removed from DOM at 3.8s
   useEffect(() => {
-    const t1 = setTimeout(() => setCurtainScattering(true),  1500)
-    const t2 = setTimeout(() => setShowCurtain(false),       2700)
+    const t1 = setTimeout(() => setCurtainScattering(true),  2000)
+    const t2 = setTimeout(() => setShowCurtain(false),       3800)
     return () => { clearTimeout(t1); clearTimeout(t2) }
   }, [])
 
