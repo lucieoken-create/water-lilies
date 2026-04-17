@@ -37,8 +37,8 @@ const PHOTOS = [
   { id: 'monet',   src: monetImg,   alt: 'Monet',   x: '54%', y: '77%' },
 ]
 
-// 10 ambient pads — always present, in open water away from cards
-const AMBIENT_PADS = [
+// 10 ambient pads — desktop (landscape): scattered in open water away from cards
+const AMBIENT_PADS_DESKTOP = [
   { id: 'ap0', type: 'pad',   x: '86%', y: '3%',  scale: 1.8, rotation:  -8, size: 100 },
   { id: 'ap1', type: 'pink',  x: '88%', y: '40%', scale: 1.5, rotation:  13, size: 80  },
   { id: 'ap2', type: 'white', x: '47%', y: '91%', scale: 1.9, rotation:  -5, size: 80  },
@@ -49,6 +49,20 @@ const AMBIENT_PADS = [
   { id: 'ap7', type: 'pad',   x: '91%', y: '10%', scale: 1.6, rotation:  -6, size: 100 },
   { id: 'ap8', type: 'white', x: '57%', y: '89%', scale: 1.8, rotation:   8, size: 80  },
   { id: 'ap9', type: 'pink',  x: '32%', y: '92%', scale: 1.4, rotation: -11, size: 80  },
+]
+
+// Mobile (portrait): evenly spread across the full height, avoiding card positions
+const AMBIENT_PADS_MOBILE = [
+  { id: 'ap0', type: 'pad',   x: '-8%', y:  '2%', scale: 1.8, rotation:  -8, size: 100 },
+  { id: 'ap1', type: 'pink',  x: '68%', y:  '0%', scale: 1.5, rotation:  12, size: 80  },
+  { id: 'ap2', type: 'white', x: '42%', y: '16%', scale: 1.6, rotation: -14, size: 80  },
+  { id: 'ap3', type: 'pad',   x: '-5%', y: '30%', scale: 1.9, rotation:   7, size: 100 },
+  { id: 'ap4', type: 'pink',  x: '80%', y: '36%', scale: 1.5, rotation: -10, size: 80  },
+  { id: 'ap5', type: 'white', x: '45%', y: '54%', scale: 2.0, rotation:  15, size: 80  },
+  { id: 'ap6', type: 'pad',   x: '-8%', y: '64%', scale: 1.8, rotation:  -6, size: 100 },
+  { id: 'ap7', type: 'pink',  x: '78%', y: '70%', scale: 1.6, rotation:  -5, size: 80  },
+  { id: 'ap8', type: 'white', x: '10%', y: '82%', scale: 1.9, rotation:   8, size: 80  },
+  { id: 'ap9', type: 'pad',   x: '60%', y: '88%', scale: 1.4, rotation: -11, size: 100 },
 ]
 
 function useIsMobile() {
@@ -139,7 +153,7 @@ export default function App() {
     <CurtainPad scattering={curtainScattering} SVG_MAP={SVG_MAP} />
   )
 
-  const ambientEl = AMBIENT_PADS.map((lily, i) => (
+  const ambientEl = (isMobile ? AMBIENT_PADS_MOBILE : AMBIENT_PADS_DESKTOP).map((lily, i) => (
     <LilyPad
       key={lily.id}
       lily={lily}
