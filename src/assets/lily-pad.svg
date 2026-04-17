@@ -1,7 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
-  <!-- Lily pad: near-full circle with a V-notch at top, lines to center -->
-  <path d="M 80,12 A 52,52 0 1,1 40,12 L 60,60 Z" fill="#4d9960"/>
-  <path d="M 80,12 A 52,52 0 1,1 40,12 L 60,60 Z" fill="none" stroke="#3a7a4a" stroke-width="1.5"/>
-  <line x1="60" y1="60" x2="80" y2="12" stroke="#3a7a4a" stroke-width="1.5"/>
-  <line x1="60" y1="60" x2="40" y2="12" stroke="#3a7a4a" stroke-width="1.5"/>
+<!-- lily-pad.svg -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-80 -20 180 100">
+  <path d="M0,0 C-55,-8 -62,40 -30,55 C0,70 48,62 64,32 C80,0 55,-8 0,0 Z" fill="#3a6b32" opacity="0.85"/>
+  <path d="M0,0 C-4,12 4,26 0,0 Z" fill="#1a3a16"/>
+  <path d="M0,0 C18,26 26,46 32,55" fill="none" stroke="#1a3a16" stroke-width="0.8" opacity="0.45"/>
+  <path d="M0,0 C-10,20 -16,40 -30,55" fill="none" stroke="#1a3a16" stroke-width="0.8" opacity="0.45"/>
+  <path d="M0,0 C24,10 44,18 64,32" fill="none" stroke="#1a3a16" stroke-width="0.8" opacity="0.45"/>
+  <path d="M0,0 C-28,6 -46,20 -55,30" fill="none" stroke="#1a3a16" stroke-width="0.8" opacity="0.45"/>
 </svg>
