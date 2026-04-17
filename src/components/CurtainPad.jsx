@@ -63,34 +63,44 @@ export default function CurtainPad({ scattering, SVG_MAP }) {
   const distX = w + padW + 80
   const distY = h + padH + 80
 
-  return SLOTS.map((slot, i) => {
-    const col = i % 5
-    const row = Math.floor(i / 5)
-    const SvgComponent = SVG_MAP[slot.type]
-
-    return (
+  return (
+    <>
+      {/* Solid base guarantees zero gaps on any viewport; fades out after pads start drifting */}
       <motion.div
-        key={i}
-        style={{
-          position:      'fixed',
-          left:          colX[col] + slot.offX,
-          top:           rowY[row] + slot.offY,
-          width:         padW,
-          rotate:        slot.rotation,
-          zIndex:        50,
-          pointerEvents: 'none',
-        }}
-        animate={scattering
-          ? { opacity: 0, x: slot.sx * distX, y: slot.sy * distY }
-          : { opacity: 1, x: 0, y: 0 }
-        }
-        transition={scattering
-          ? { duration: 2.8, ease: [0.1, 0, 0.3, 1] }
-          : { duration: 0 }
-        }
-      >
-        <SvgComponent style={{ width: '100%', height: 'auto', display: 'block' }} />
-      </motion.div>
-    )
-  })
+        style={{ position: 'fixed', inset: 0, background: '#4a8a6a', zIndex: 49, pointerEvents: 'none' }}
+        animate={{ opacity: scattering ? 0 : 1 }}
+        transition={scattering ? { duration: 2.2, delay: 0.5, ease: 'easeIn' } : { duration: 0 }}
+      />
+      {SLOTS.map((slot, i) => {
+        const col = i % 5
+        const row = Math.floor(i / 5)
+        const SvgComponent = SVG_MAP[slot.type]
+
+        return (
+          <motion.div
+            key={i}
+            style={{
+              position:      'fixed',
+              left:          colX[col] + slot.offX,
+              top:           rowY[row] + slot.offY,
+              width:         padW,
+              rotate:        slot.rotation,
+              zIndex:        50,
+              pointerEvents: 'none',
+            }}
+            animate={scattering
+              ? { opacity: 0, x: slot.sx * distX, y: slot.sy * distY }
+              : { opacity: 1, x: 0, y: 0 }
+            }
+            transition={scattering
+              ? { duration: 2.8, ease: [0.1, 0, 0.3, 1] }
+              : { duration: 0 }
+            }
+          >
+            <SvgComponent style={{ width: '100%', height: 'auto', display: 'block' }} />
+          </motion.div>
+        )
+      })}
+    </>
+  )
 }

@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 const BOB_AMOUNTS   = [3.5, 4.2, 3.0, 4.8, 3.8, 4.0, 3.2, 4.5, 3.6, 4.1, 3.3, 4.7, 3.9, 4.3, 3.1]
 const BOB_DURATIONS = [5.2, 5.8, 4.9, 6.1, 5.5, 4.7, 6.0, 5.3, 4.8, 5.9, 5.1, 6.3, 4.6, 5.7, 5.4]
 
-export default function LilyPad({ lily, lilyIndex, SvgComponent, containerRef, isMobile, ambient }) {
+export default function LilyPad({ lily, lilyIndex, SvgComponent, containerRef, ambient }) {
   const [isDragging, setIsDragging] = useState(false)
 
   const bobAmount   = BOB_AMOUNTS[lilyIndex % BOB_AMOUNTS.length]
@@ -12,27 +12,25 @@ export default function LilyPad({ lily, lilyIndex, SvgComponent, containerRef, i
 
   return (
     <motion.div
-      // ambient pads are already visible — skip the fade-in entirely
       initial={ambient ? false : { opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={ambient ? {} : { delay: lilyIndex * 0.05, duration: 0.7, ease: 'easeOut' }}
       style={{
-        position:      isMobile ? 'fixed' : 'absolute',
-        left:          lily.x,
-        top:           lily.y,
-        width:         lily.size,
-        rotate:        lily.rotation,
-        scale:         lily.scale,
-        zIndex:        isDragging ? 7 : 3,
-        cursor:        'default',
-        pointerEvents: isMobile ? 'none' : 'auto',
+        position: 'absolute',
+        left:     lily.x,
+        top:      lily.y,
+        width:    lily.size,
+        rotate:   lily.rotation,
+        scale:    lily.scale,
+        zIndex:   isDragging ? 7 : 3,
+        cursor:   'default',
       }}
-      drag={!isMobile}
-      dragConstraints={isMobile ? undefined : containerRef}
+      drag
+      dragConstraints={containerRef}
       dragMomentum={false}
       dragElastic={0.08}
-      onDragStart={isMobile ? undefined : () => setIsDragging(true)}
-      onDragEnd={isMobile ? undefined : () => setIsDragging(false)}
+      onDragStart={() => setIsDragging(true)}
+      onDragEnd={() => setIsDragging(false)}
       onClick={(e) => e.stopPropagation()}
     >
       <motion.div
@@ -53,7 +51,7 @@ export default function LilyPad({ lily, lilyIndex, SvgComponent, containerRef, i
             width:   '100%',
             height:  'auto',
             display: 'block',
-            cursor:  isMobile ? 'default' : (isDragging ? 'grabbing' : 'grab'),
+            cursor:  isDragging ? 'grabbing' : 'grab',
           }}
         />
       </motion.div>
