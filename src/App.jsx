@@ -37,22 +37,6 @@ const PHOTOS = [
   { id: 'monet',   src: monetImg,   alt: 'Monet',   x: '54%', y: '77%' },
 ]
 
-// 9 pads forming an organic carpet on load — scatter outward after 1.5s
-const CURTAIN_PADS = [
-  // top row
-  { id: 'cp0', type: 'pink',  x: '2%',  y: '1%',  scale: 3.5, rotation: -15, size: 80,  scatterX: -700, scatterY: -400 },
-  { id: 'cp1', type: 'pad',   x: '30%', y: '-3%', scale: 4.0, rotation:   6, size: 100, scatterX:  -80, scatterY: -700 },
-  { id: 'cp2', type: 'white', x: '62%', y: '3%',  scale: 3.2, rotation:  18, size: 80,  scatterX:  650, scatterY: -350 },
-  // middle row
-  { id: 'cp3', type: 'pad',   x: '-5%', y: '33%', scale: 3.8, rotation:  -8, size: 100, scatterX: -750, scatterY:  100 },
-  { id: 'cp4', type: 'pink',  x: '26%', y: '26%', scale: 4.0, rotation:  12, size: 80,  scatterX: -300, scatterY:  600 },
-  { id: 'cp5', type: 'white', x: '60%', y: '28%', scale: 3.5, rotation: -10, size: 80,  scatterX:  700, scatterY:  -80 },
-  // bottom row
-  { id: 'cp6', type: 'white', x: '4%',  y: '60%', scale: 3.0, rotation:  14, size: 80,  scatterX: -550, scatterY:  500 },
-  { id: 'cp7', type: 'pink',  x: '38%', y: '58%', scale: 3.8, rotation:  -6, size: 80,  scatterX:  180, scatterY:  650 },
-  { id: 'cp8', type: 'pad',   x: '65%', y: '52%', scale: 3.2, rotation:   9, size: 100, scatterX:  700, scatterY:  400 },
-]
-
 // 6 ambient pads — always present, in open water away from cards
 // Card reference: V1(4,8) V2(68,6) V3(18,46) V4(62,50) V5(5,72) V6(67,74) V7(80,22)
 //                 georgia(34,7) jss(38,35) winslow(26,64) monet(54,77)
@@ -157,15 +141,10 @@ export default function App() {
   const visiblePhotos = PHOTOS.filter(p => !removedIds.has(p.id))
   const allCardsCount = visibleVideos.length + visiblePhotos.length
 
-  // Curtain and ambient pads are the same element set for both layouts
-  const curtainEl = showCurtain && CURTAIN_PADS.map(pad => (
-    <CurtainPad
-      key={pad.id}
-      pad={pad}
-      SvgComponent={SVG_MAP[pad.type]}
-      scattering={curtainScattering}
-    />
-  ))
+  // CurtainPad renders all 9 pads internally using live viewport dimensions
+  const curtainEl = showCurtain && (
+    <CurtainPad scattering={curtainScattering} SVG_MAP={SVG_MAP} />
+  )
 
   const ambientEl = AMBIENT_PADS.map((lily, i) => (
     <LilyPad
