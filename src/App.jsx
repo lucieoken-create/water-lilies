@@ -38,19 +38,17 @@ const PHOTOS = [
 ]
 
 // 10 ambient pads — always present, in open water away from cards
-// Card reference: V1(4,8) V2(68,6) V3(18,46) V4(62,50) V5(5,72) V6(67,74) V7(80,22)
-//                 georgia(34,7) jss(38,35) winslow(26,64) monet(54,77)
 const AMBIENT_PADS = [
-  { id: 'ap0', type: 'pad',   x: '86%', y: '3%',  scale: 1.8, rotation:  -8, size: 100 }, // top-right edge
-  { id: 'ap1', type: 'pink',  x: '88%', y: '40%', scale: 1.5, rotation:  13, size: 80  }, // right side
-  { id: 'ap2', type: 'white', x: '47%', y: '91%', scale: 1.9, rotation:  -5, size: 80  }, // bottom center
-  { id: 'ap3', type: 'pink',  x: '-1%', y: '52%', scale: 1.4, rotation:   7, size: 80  }, // left edge
-  { id: 'ap4', type: 'pad',   x: '81%', y: '84%', scale: 2.0, rotation: -14, size: 100 }, // bottom-right
-  { id: 'ap5', type: 'white', x: '2%',  y: '90%', scale: 1.6, rotation:  10, size: 80  }, // bottom-left edge
-  { id: 'ap6', type: 'pink',  x: '11%', y: '22%', scale: 1.5, rotation:  15, size: 80  }, // left-center, between V1 and V3
-  { id: 'ap7', type: 'pad',   x: '91%', y: '10%', scale: 1.6, rotation:  -6, size: 100 }, // far top-right
-  { id: 'ap8', type: 'white', x: '57%', y: '89%', scale: 1.8, rotation:   8, size: 80  }, // bottom right of monet
-  { id: 'ap9', type: 'pink',  x: '32%', y: '92%', scale: 1.4, rotation: -11, size: 80  }, // bottom-center left
+  { id: 'ap0', type: 'pad',   x: '86%', y: '3%',  scale: 1.8, rotation:  -8, size: 100 },
+  { id: 'ap1', type: 'pink',  x: '88%', y: '40%', scale: 1.5, rotation:  13, size: 80  },
+  { id: 'ap2', type: 'white', x: '47%', y: '91%', scale: 1.9, rotation:  -5, size: 80  },
+  { id: 'ap3', type: 'pink',  x: '-1%', y: '52%', scale: 1.4, rotation:   7, size: 80  },
+  { id: 'ap4', type: 'pad',   x: '81%', y: '84%', scale: 2.0, rotation: -14, size: 100 },
+  { id: 'ap5', type: 'white', x: '2%',  y: '90%', scale: 1.6, rotation:  10, size: 80  },
+  { id: 'ap6', type: 'pink',  x: '11%', y: '22%', scale: 1.5, rotation:  15, size: 80  },
+  { id: 'ap7', type: 'pad',   x: '91%', y: '10%', scale: 1.6, rotation:  -6, size: 100 },
+  { id: 'ap8', type: 'white', x: '57%', y: '89%', scale: 1.8, rotation:   8, size: 80  },
+  { id: 'ap9', type: 'pink',  x: '32%', y: '92%', scale: 1.4, rotation: -11, size: 80  },
 ]
 
 function useIsMobile() {
@@ -84,7 +82,7 @@ export default function App() {
   const [curtainScattering, setCurtainScattering] = useState(false)
   const [showCurtain,       setShowCurtain]       = useState(true)
 
-  // Curtain stays for 2s, then scatters over 1.8s, removed from DOM at 3.8s
+  // Curtain dwells 2s, scatters over 2.8s, removed from DOM at 4.8s
   useEffect(() => {
     const t1 = setTimeout(() => setCurtainScattering(true),  2000)
     const t2 = setTimeout(() => setShowCurtain(false),       4800)
@@ -126,18 +124,10 @@ export default function App() {
     })
   }, [])
 
-  const handleBackgroundClick = useCallback((e) => {
-    if (isAnySelected) return
-    const rect = containerRef.current.getBoundingClientRect()
-    const id   = `${Date.now()}-${Math.random()}`
-    setRipples(prev => [...prev, { id, x: e.clientX - rect.left, y: e.clientY - rect.top }])
-    setTimeout(() => setRipples(prev => prev.filter(r => r.id !== id)), 1900)
-  }, [isAnySelected])
-
-  const handleMobileClick = useCallback((e) => {
+  const handleClick = useCallback((e) => {
     if (isAnySelected) return
     const id = `${Date.now()}-${Math.random()}`
-    setRipples(prev => [...prev, { id, x: e.clientX, y: e.clientY, fixed: true }])
+    setRipples(prev => [...prev, { id, x: e.clientX, y: e.clientY }])
     setTimeout(() => setRipples(prev => prev.filter(r => r.id !== id)), 1900)
   }, [isAnySelected])
 
@@ -145,7 +135,6 @@ export default function App() {
   const visiblePhotos = PHOTOS.filter(p => !removedIds.has(p.id))
   const allCardsCount = visibleVideos.length + visiblePhotos.length
 
-  // CurtainPad renders all 9 pads internally using live viewport dimensions
   const curtainEl = showCurtain && (
     <CurtainPad scattering={curtainScattering} SVG_MAP={SVG_MAP} />
   )
@@ -157,7 +146,6 @@ export default function App() {
       lilyIndex={i}
       SvgComponent={SVG_MAP[lily.type]}
       containerRef={containerRef}
-      isMobile={isMobile}
       ambient
     />
   ))
@@ -184,7 +172,7 @@ export default function App() {
     </AnimatePresence>
   )
 
-  const renderCards = (mobile) => (
+  const cards = (
     <>
       {visibleVideos.map((video, i) => (
         <FloatingCard
@@ -197,7 +185,7 @@ export default function App() {
           onSelect={() => setSelectedId(video.id)}
           onClose={() => setSelectedId(null)}
           onRemove={() => removeCard(video.id)}
-          isMobile={mobile}
+          isMobile={isMobile}
         />
       ))}
       {visiblePhotos.map((photo, i) => (
@@ -211,7 +199,7 @@ export default function App() {
           onSelect={() => setSelectedId(photo.id)}
           onClose={() => setSelectedId(null)}
           onRemove={() => removeCard(photo.id)}
-          isMobile={mobile}
+          isMobile={isMobile}
         />
       ))}
       {userCards.map((card, i) =>
@@ -226,7 +214,7 @@ export default function App() {
             onSelect={() => setSelectedId(card.id)}
             onClose={() => setSelectedId(null)}
             onRemove={() => removeUserCard(card.id)}
-            isMobile={mobile}
+            isMobile={isMobile}
           />
         ) : (
           <PhotoCard
@@ -239,48 +227,17 @@ export default function App() {
             onSelect={() => setSelectedId(card.id)}
             onClose={() => setSelectedId(null)}
             onRemove={() => removeUserCard(card.id)}
-            isMobile={mobile}
+            isMobile={isMobile}
           />
         )
       )}
     </>
   )
 
-  if (isMobile) {
-    return (
-      <div
-        ref={containerRef}
-        style={{ position: 'relative', minHeight: '100dvh', overflowY: 'auto', overflowX: 'hidden' }}
-        onClick={handleMobileClick}
-      >
-        <div style={{
-          position: 'fixed', inset: 0,
-          backgroundImage: `url(${bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center',
-          backgroundColor: '#4a8a6a', zIndex: 0,
-        }} />
-
-        {ripples.map(r => <Ripple key={r.id} x={r.x} y={r.y} fixed />)}
-        {curtainEl}
-        {ambientEl}
-
-        <div style={{
-          position: 'relative', zIndex: 2,
-          display: 'flex', flexDirection: 'column', alignItems: 'center',
-          gap: 28, padding: '60px 20px 140px',
-        }}>
-          {renderCards(true)}
-        </div>
-
-        {overlay}
-        <AddLinkInput onAdd={handleAddLink} />
-      </div>
-    )
-  }
-
   return (
     <div
       ref={containerRef}
-      onClick={handleBackgroundClick}
+      onClick={handleClick}
       style={{
         position: 'fixed', inset: 0, overflow: 'hidden',
         backgroundImage: `url(${bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center',
@@ -290,7 +247,7 @@ export default function App() {
       {ripples.map(r => <Ripple key={r.id} x={r.x} y={r.y} />)}
       {curtainEl}
       {ambientEl}
-      {renderCards(false)}
+      {cards}
       {overlay}
       <AddLinkInput onAdd={handleAddLink} />
     </div>
