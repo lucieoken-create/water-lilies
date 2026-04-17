@@ -87,7 +87,7 @@ export default function App() {
   // Curtain stays for 2s, then scatters over 1.8s, removed from DOM at 3.8s
   useEffect(() => {
     const t1 = setTimeout(() => setCurtainScattering(true),  2000)
-    const t2 = setTimeout(() => setShowCurtain(false),       3800)
+    const t2 = setTimeout(() => setShowCurtain(false),       4800)
     return () => { clearTimeout(t1); clearTimeout(t2) }
   }, [])
 
