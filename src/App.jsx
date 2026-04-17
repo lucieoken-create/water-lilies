@@ -34,23 +34,26 @@ const PHOTOS = [
   { id: 'monet',   src: monetImg,   alt: 'Monet',   x: '54%', y: '77%' },
 ]
 
-// 6 pink blooms, 5 white blooms, 4 pads — scattered to loosely overlap cards
+// 6 pink blooms, 5 white blooms, 4 pads
+// Scale 1.5–2.5, rotation ±10° — positioned directly over cards so visitors brush them aside
+// Card reference: V1(4%,8%) V2(68%,6%) V3(18%,46%) V4(62%,50%) V5(5%,72%) V6(67%,74%)
+//                 georgia(34%,7%) jss(38%,35%) winslow(26%,64%) monet(54%,77%)
 const LILY_PADS = [
-  { id: 'lp0',  type: 'pink',  x: '2%',  y: '5%',  scale: 1.10, rotation: -12, size: 80  },
-  { id: 'lp1',  type: 'pink',  x: '70%', y: '2%',  scale: 0.82, rotation:  22, size: 80  },
-  { id: 'lp2',  type: 'pink',  x: '14%', y: '44%', scale: 1.22, rotation:  -8, size: 80  },
-  { id: 'lp3',  type: 'pink',  x: '63%', y: '46%', scale: 0.92, rotation:  28, size: 80  },
-  { id: 'lp4',  type: 'pink',  x: '34%', y: '6%',  scale: 0.78, rotation: -25, size: 80  },
-  { id: 'lp5',  type: 'pink',  x: '53%', y: '76%', scale: 1.18, rotation:  14, size: 80  },
-  { id: 'lp6',  type: 'white', x: '36%', y: '30%', scale: 1.05, rotation:  -4, size: 80  },
-  { id: 'lp7',  type: 'white', x: '3%',  y: '67%', scale: 0.88, rotation:  17, size: 80  },
-  { id: 'lp8',  type: 'white', x: '69%', y: '70%', scale: 1.28, rotation: -20, size: 80  },
-  { id: 'lp9',  type: 'white', x: '24%', y: '63%', scale: 0.95, rotation:  -9, size: 80  },
-  { id: 'lp10', type: 'white', x: '48%', y: '14%', scale: 0.72, rotation:  30, size: 80  },
-  { id: 'lp11', type: 'pad',   x: '80%', y: '38%', scale: 1.30, rotation:   6, size: 100 },
-  { id: 'lp12', type: 'pad',   x: '46%', y: '55%', scale: 0.80, rotation: -18, size: 100 },
-  { id: 'lp13', type: 'pad',   x: '19%', y: '20%', scale: 1.08, rotation:  24, size: 100 },
-  { id: 'lp14', type: 'pad',   x: '72%', y: '84%', scale: 0.90, rotation: -11, size: 100 },
+  { id: 'lp0',  type: 'pink',  x: '1%',  y: '3%',  scale: 1.8, rotation:  -7, size: 80  }, // over V1
+  { id: 'lp1',  type: 'pink',  x: '65%', y: '2%',  scale: 2.1, rotation:   8, size: 80  }, // over V2
+  { id: 'lp2',  type: 'pink',  x: '14%', y: '42%', scale: 1.9, rotation:  -5, size: 80  }, // over V3
+  { id: 'lp3',  type: 'pink',  x: '59%', y: '45%', scale: 2.3, rotation:   9, size: 80  }, // over V4
+  { id: 'lp4',  type: 'pink',  x: '31%', y: '3%',  scale: 1.7, rotation:  -8, size: 80  }, // over georgia
+  { id: 'lp5',  type: 'pink',  x: '51%', y: '73%', scale: 2.0, rotation:   6, size: 80  }, // over monet
+  { id: 'lp6',  type: 'white', x: '35%', y: '30%', scale: 1.6, rotation:  -4, size: 80  }, // over jss
+  { id: 'lp7',  type: 'white', x: '2%',  y: '68%', scale: 2.2, rotation:   7, size: 80  }, // over V5
+  { id: 'lp8',  type: 'white', x: '64%', y: '69%', scale: 1.8, rotation:  -9, size: 80  }, // over V6
+  { id: 'lp9',  type: 'white', x: '23%', y: '60%', scale: 2.0, rotation:   5, size: 80  }, // over winslow
+  { id: 'lp10', type: 'white', x: '45%', y: '10%', scale: 1.5, rotation:  -6, size: 80  }, // between cards
+  { id: 'lp11', type: 'pad',   x: '77%', y: '34%', scale: 2.5, rotation:   4, size: 100 }, // near V4
+  { id: 'lp12', type: 'pad',   x: '42%', y: '50%', scale: 1.8, rotation:  -8, size: 100 }, // over jss/center
+  { id: 'lp13', type: 'pad',   x: '16%', y: '16%', scale: 2.2, rotation:   7, size: 100 }, // over V1 area
+  { id: 'lp14', type: 'pad',   x: '69%', y: '80%', scale: 1.9, rotation:  -3, size: 100 }, // over V6/monet
 ]
 
 export default function App() {
