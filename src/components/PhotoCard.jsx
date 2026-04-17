@@ -1,7 +1,8 @@
 import { useRef, useState } from 'react'
 import { AnimatePresence, motion, useMotionValue } from 'framer-motion'
 
-const CARD_WIDTH = 200
+const CARD_WIDTH        = 200
+const CARD_WIDTH_MOBILE = 140
 
 const removeBtn = {
   position:       'absolute',
@@ -32,6 +33,7 @@ export default function PhotoCard({
   onSelect,
   onClose,
   onRemove,
+  isMobile = false,
 }) {
   const [isDragging, setIsDragging] = useState(false)
   const [hasLoaded, setHasLoaded]   = useState(false)
@@ -43,6 +45,10 @@ export default function PhotoCard({
   })
   const dragX = useMotionValue(initPos.x)
   const dragY = useMotionValue(initPos.y)
+
+  const cardCursor = isMobile
+    ? (isSelected ? 'default' : 'pointer')
+    : (isAnySelected ? 'default' : isDragging ? 'grabbing' : 'grab')
 
   return (
     <>
@@ -60,33 +66,31 @@ export default function PhotoCard({
         }}
         onAnimationComplete={() => setHasLoaded(true)}
         style={{
-          position: 'absolute',
-          left:     photo.x,
-          top:      photo.y,
-          width:    CARD_WIDTH,
-          x:        dragX,
-          y:        dragY,
+          position: isMobile ? 'relative' : 'absolute',
+          ...(isMobile ? {} : { left: photo.x, top: photo.y }),
+          width:    isMobile ? CARD_WIDTH_MOBILE : CARD_WIDTH,
+          ...(isMobile ? {} : { x: dragX, y: dragY }),
           zIndex:   isDragging ? 8 : 2,
-          cursor:   isAnySelected ? 'default' : isDragging ? 'grabbing' : 'grab',
+          cursor:   'default',
         }}
-        drag={!isSelected && !isAnySelected}
+        drag={!isMobile && !isSelected && !isAnySelected}
         dragConstraints={containerRef}
         dragMomentum={false}
         dragElastic={0.08}
         dragTransition={{ power: 0, timeConstant: 0 }}
-        onDragStart={() => { setIsDragging(true); didDragRef.current = false }}
-        onDrag={(_, info) => {
+        onDragStart={isMobile ? undefined : () => { setIsDragging(true); didDragRef.current = false }}
+        onDrag={isMobile ? undefined : (_, info) => {
           if (Math.abs(info.offset.x) > 4 || Math.abs(info.offset.y) > 4)
             didDragRef.current = true
         }}
-        onDragEnd={() => {
+        onDragEnd={isMobile ? undefined : () => {
           try { localStorage.setItem(`wl-dp-${photo.id}`, JSON.stringify({ x: dragX.get(), y: dragY.get() })) } catch {}
           setTimeout(() => { didDragRef.current = false }, 0)
           setIsDragging(false)
         }}
         onClick={(e) => {
           e.stopPropagation()
-          if (!didDragRef.current && !isAnySelected) onSelect()
+          if (!isAnySelected && (isMobile || !didDragRef.current)) onSelect()
         }}
       >
         {/* Remove button */}
@@ -101,7 +105,7 @@ export default function PhotoCard({
           </button>
         )}
 
-        {/* Card face */}
+        {/* Card face — cursor lives here so it only shows over the visible shape */}
         <motion.div
           animate={{
             scale:     isDragging ? 1.07 : 1,
@@ -110,7 +114,15 @@ export default function PhotoCard({
               : '0 8px 28px rgba(0,0,0,0.22), 0 2px 8px rgba(0,0,0,0.12)',
           }}
           transition={{ type: 'spring', stiffness: 420, damping: 32 }}
-          style={{ borderRadius: 14, overflow: 'hidden', background: 'rgba(255,255,255,0.94)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', cursor: 'inherit', userSelect: 'none' }}
+          style={{
+            borderRadius:         14,
+            overflow:             'hidden',
+            background:           'rgba(255,255,255,0.94)',
+            backdropFilter:       'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            cursor:               cardCursor,
+            userSelect:           'none',
+          }}
         >
           <img
             src={photo.src}

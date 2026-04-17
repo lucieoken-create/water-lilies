@@ -1,10 +1,10 @@
 import { motion } from 'framer-motion'
 
-export default function Ripple({ x, y }) {
+export default function Ripple({ x, y, fixed }) {
   return (
     <div
       style={{
-        position:      'absolute',
+        position:      fixed ? 'fixed' : 'absolute',
         left:          x,
         top:           y,
         pointerEvents: 'none',
