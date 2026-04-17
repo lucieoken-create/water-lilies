@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useMotionValue } from 'framer-motion'
 
-const CARD_WIDTH = 210
+const CARD_WIDTH        = 210
+const CARD_WIDTH_MOBILE = 148
 
 const removeBtn = {
   position:       'absolute',
@@ -32,13 +33,13 @@ export default function FloatingCard({
   onSelect,
   onClose,
   onRemove,
+  isMobile = false,
 }) {
-  const [title, setTitle]     = useState(`Video ${loadIndex + 1}`)
+  const [title, setTitle]           = useState(`Video ${loadIndex + 1}`)
   const [isDragging, setIsDragging] = useState(false)
   const [hasLoaded, setHasLoaded]   = useState(false)
   const didDragRef = useRef(false)
 
-  // Restore drag position from localStorage
   const [initPos] = useState(() => {
     try { return JSON.parse(localStorage.getItem(`wl-dp-${video.id}`)) ?? { x: 0, y: 0 } }
     catch { return { x: 0, y: 0 } }
@@ -56,6 +57,10 @@ export default function FloatingCard({
       .catch(() => {})
   }, [video.id])
 
+  const cardCursor = isMobile
+    ? (isSelected ? 'default' : 'pointer')
+    : (isAnySelected ? 'default' : isDragging ? 'grabbing' : 'grab')
+
   return (
     <>
       {/* Small floating card */}
@@ -72,33 +77,31 @@ export default function FloatingCard({
         }}
         onAnimationComplete={() => setHasLoaded(true)}
         style={{
-          position: 'absolute',
-          left:     video.x,
-          top:      video.y,
-          width:    CARD_WIDTH,
-          x:        dragX,
-          y:        dragY,
+          position: isMobile ? 'relative' : 'absolute',
+          ...(isMobile ? {} : { left: video.x, top: video.y }),
+          width:    isMobile ? CARD_WIDTH_MOBILE : CARD_WIDTH,
+          ...(isMobile ? {} : { x: dragX, y: dragY }),
           zIndex:   isDragging ? 8 : 2,
-          cursor:   isAnySelected ? 'default' : isDragging ? 'grabbing' : 'grab',
+          cursor:   'default',
         }}
-        drag={!isSelected && !isAnySelected}
+        drag={!isMobile && !isSelected && !isAnySelected}
         dragConstraints={containerRef}
         dragMomentum={false}
         dragElastic={0.08}
         dragTransition={{ power: 0, timeConstant: 0 }}
-        onDragStart={() => { setIsDragging(true); didDragRef.current = false }}
-        onDrag={(_, info) => {
+        onDragStart={isMobile ? undefined : () => { setIsDragging(true); didDragRef.current = false }}
+        onDrag={isMobile ? undefined : (_, info) => {
           if (Math.abs(info.offset.x) > 4 || Math.abs(info.offset.y) > 4)
             didDragRef.current = true
         }}
-        onDragEnd={() => {
+        onDragEnd={isMobile ? undefined : () => {
           try { localStorage.setItem(`wl-dp-${video.id}`, JSON.stringify({ x: dragX.get(), y: dragY.get() })) } catch {}
           setTimeout(() => { didDragRef.current = false }, 0)
           setIsDragging(false)
         }}
         onClick={(e) => {
           e.stopPropagation()
-          if (!didDragRef.current && !isAnySelected) onSelect()
+          if (!isAnySelected && (isMobile || !didDragRef.current)) onSelect()
         }}
       >
         {/* Remove button */}
@@ -113,7 +116,7 @@ export default function FloatingCard({
           </button>
         )}
 
-        {/* Card face */}
+        {/* Card face — cursor lives here so it only shows over the visible shape */}
         <motion.div
           animate={{
             scale:     isDragging ? 1.07 : 1,
@@ -128,7 +131,7 @@ export default function FloatingCard({
             background:           'rgba(255,255,255,0.94)',
             backdropFilter:       'blur(12px)',
             WebkitBackdropFilter: 'blur(12px)',
-            cursor:               'inherit',
+            cursor:               cardCursor,
             userSelect:           'none',
           }}
         >
