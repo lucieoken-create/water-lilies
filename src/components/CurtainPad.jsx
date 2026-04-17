@@ -5,30 +5,30 @@ import { motion } from 'framer-motion'
 // offX/offY: organic nudge from grid slot; sx/sy: scatter direction multipliers.
 const SLOTS = [
   // Row 0 — scatter UP
-  { type: 'pad',   offX:  12, offY: -10, rotation: -12, sx: -1,   sy: -1   },
-  { type: 'pink',  offX: -16, offY:   8, rotation:   8, sx: -0.3, sy: -1   },
-  { type: 'pad',   offX:  18, offY: -14, rotation:  14, sx:  0.3, sy: -1   },
-  { type: 'white', offX: -10, offY:  10, rotation: -16, sx:  1,   sy: -1   },
+  { type: 'pad',   offX:   8, offY:  -8, rotation: -12, sx: -1,   sy: -1   },
+  { type: 'pink',  offX: -10, offY:   6, rotation:   8, sx: -0.3, sy: -1   },
+  { type: 'pad',   offX:  10, offY:  -8, rotation:  14, sx:  0.3, sy: -1   },
+  { type: 'white', offX:  -8, offY:   8, rotation: -16, sx:  1,   sy: -1   },
   // Row 1 — scatter sideways
-  { type: 'pink',  offX:  20, offY: -18, rotation: -10, sx: -1,   sy:  0   },
-  { type: 'pad',   offX: -22, offY:  14, rotation:  12, sx: -0.4, sy:  1   },
-  { type: 'white', offX:  16, offY:  -8, rotation:  -8, sx:  0.5, sy: -0.5 },
-  { type: 'pad',   offX: -12, offY:  18, rotation:  16, sx:  1,   sy:  0   },
+  { type: 'pink',  offX:  10, offY: -10, rotation: -10, sx: -1,   sy:  0   },
+  { type: 'pad',   offX: -12, offY:   8, rotation:  12, sx: -0.4, sy:  1   },
+  { type: 'white', offX:   8, offY:  -6, rotation:  -8, sx:  0.5, sy: -0.5 },
+  { type: 'pad',   offX:  -8, offY:  10, rotation:  16, sx:  1,   sy:  0   },
   // Row 2 — scatter mixed diagonal
-  { type: 'pad',   offX:  10, offY: -16, rotation: -14, sx: -1,   sy:  0.5 },
-  { type: 'white', offX: -18, offY:  12, rotation:   6, sx: -0.2, sy:  1   },
-  { type: 'pink',  offX:  22, offY:  -8, rotation: -16, sx:  0.3, sy:  1   },
-  { type: 'pad',   offX: -14, offY:  16, rotation:  10, sx:  1,   sy:  0.5 },
+  { type: 'pad',   offX:   6, offY: -10, rotation: -14, sx: -1,   sy:  0.5 },
+  { type: 'white', offX: -10, offY:   8, rotation:   6, sx: -0.2, sy:  1   },
+  { type: 'pink',  offX:  12, offY:  -6, rotation: -16, sx:  0.3, sy:  1   },
+  { type: 'pad',   offX:  -8, offY:  10, rotation:  10, sx:  1,   sy:  0.5 },
   // Row 3 — scatter mixed
-  { type: 'white', offX:   8, offY: -12, rotation: -18, sx: -1,   sy: -0.3 },
-  { type: 'pad',   offX: -20, offY:  10, rotation:   4, sx: -0.5, sy:  1   },
-  { type: 'pink',  offX:  16, offY: -18, rotation:  18, sx:  0.4, sy: -0.4 },
-  { type: 'pad',   offX: -12, offY:  14, rotation:  -6, sx:  1,   sy:  0   },
+  { type: 'white', offX:   6, offY:  -8, rotation: -18, sx: -1,   sy: -0.3 },
+  { type: 'pad',   offX: -12, offY:   6, rotation:   4, sx: -0.5, sy:  1   },
+  { type: 'pink',  offX:  10, offY: -10, rotation:  18, sx:  0.4, sy: -0.4 },
+  { type: 'pad',   offX:  -8, offY:   8, rotation:  -6, sx:  1,   sy:  0   },
   // Row 4 — scatter DOWN
-  { type: 'pad',   offX:  14, offY:  -8, rotation: -10, sx: -1,   sy:  1   },
-  { type: 'pink',  offX: -18, offY:  16, rotation:   6, sx: -0.1, sy:  1   },
-  { type: 'pad',   offX:  20, offY: -12, rotation:  16, sx:  0.2, sy:  1   },
-  { type: 'white', offX: -14, offY:   8, rotation:  -4, sx:  1,   sy:  1   },
+  { type: 'pad',   offX:   8, offY:  -6, rotation: -10, sx: -1,   sy:  1   },
+  { type: 'pink',  offX: -10, offY:  10, rotation:   6, sx: -0.1, sy:  1   },
+  { type: 'pad',   offX:  12, offY:  -8, rotation:  16, sx:  0.2, sy:  1   },
+  { type: 'white', offX:  -8, offY:   6, rotation:  -4, sx:  1,   sy:  1   },
 ]
 
 export default function CurtainPad({ scattering, SVG_MAP }) {
@@ -42,28 +42,17 @@ export default function CurtainPad({ scattering, SVG_MAP }) {
 
   const { w, h } = dims
 
-  // 60% of viewport width: adjacent columns overlap by ~55% of padW.
-  // SVG shapes fill ~79% of their bounding box; 55% overlap >> 21% transparent edge.
-  const padW = Math.round(w * 0.60)
-  // Average SVG aspect ratio across the three types
+  // 65% of viewport width; center-based layout so grid is symmetric.
+  const padW = Math.round(w * 0.65)
   const padH = Math.round(padW * 0.65)
 
-  // 4 columns — col 0 bleeds off left, col 3 bleeds off right
-  const colX = [
-    -Math.round(padW * 0.05),  // slightly off left edge
-    Math.round(w * 0.25),
-    Math.round(w * 0.50),
-    Math.round(w * 0.75),      // extends ~35% past right edge
-  ]
+  // 4 columns: centers at 10%, 37%, 63%, 90% of vw. Left edge = center − padW/2.
+  // Col 0 bleeds off left, col 3 bleeds off right.
+  const colX = [0.10, 0.37, 0.63, 0.90].map(f => Math.round(f * w - padW / 2))
 
-  // 5 rows at 20% vh spacing — row overlap ≥ 65% of padH, closing all vertical gaps
-  const rowY = [
-    -Math.round(padH * 0.10),  // bleed above top edge
-    Math.round(h * 0.20),
-    Math.round(h * 0.40),
-    Math.round(h * 0.60),
-    Math.round(h * 0.80),      // bleeds well below bottom edge
-  ]
+  // 5 rows: centers at 0%, 25%, 50%, 75%, 100% of vh. Top = center − padH/2.
+  // Row 0 bleeds above viewport, row 4 bleeds below.
+  const rowY = [0.00, 0.25, 0.50, 0.75, 1.00].map(f => Math.round(f * h - padH / 2))
 
   // Scatter distances guarantee every pad exits fully off-screen
   const distX = w + padW + 80
